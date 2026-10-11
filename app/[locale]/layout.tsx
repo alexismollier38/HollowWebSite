@@ -28,7 +28,7 @@ export async function generateMetadata({
   return {
     metadataBase: new URL(env.NEXT_PUBLIC_URL_SITE),
     title: {
-      default: `${t('marque.nom')} — ${t('marque.baseline')}`,
+      default: 'Hollow',
       template: `%s — ${t('marque.nom')}`,
     },
     description: t('marque.description'),
@@ -39,7 +39,7 @@ export async function generateMetadata({
     openGraph: {
       type: 'website',
       siteName: t('marque.nom'),
-      title: `${t('marque.nom')} — ${t('marque.baseline')}`,
+      title: 'Hollow',
       description: t('marque.description'),
       locale,
     },
