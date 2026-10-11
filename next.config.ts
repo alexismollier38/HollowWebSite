@@ -27,8 +27,10 @@ const enTetesSecurite = [
 ]
 
 const nextConfig: NextConfig = {
-  // Le site est auto-hébergé derrière un reverse proxy : on livre une image autonome.
-  output: 'standalone',
+  // Docker utilise l'image autonome ; Vercel gère déjà son propre bundling.
+  // Next.js 16.3 ne produit pas le manifeste attendu par l'adaptateur Vercel
+  // lorsque `output: 'standalone'` est activé.
+  output: process.env.VERCEL ? undefined : 'standalone',
 
   experimental: {sri: {algorithm: 'sha256'}},
   reactStrictMode: true,
