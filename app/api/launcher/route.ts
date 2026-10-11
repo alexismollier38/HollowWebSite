@@ -156,6 +156,7 @@ async function ticket(request: Request, reply = false) {
     payload = {
       ...body,
       accountId: account.id,
+      requesterName: account.username,
       requesterDiscordId: account.discordId,
       ...(reply
         ? {
