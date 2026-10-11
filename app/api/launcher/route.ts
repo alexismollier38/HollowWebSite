@@ -76,10 +76,33 @@ async function avatars(request: Request) {
   const row = rows[0] as {discordId: string | null; steamId: string | null} | undefined
   const discordAvatarUrl =
     row?.discordId && env.TICKETS_API_TOKEN ? await externalAvatar(row.discordId) : null
-  const steamAvatarUrl = row?.steamId
-    ? `https://avatars.steamstatic.com/${row.steamId}_full.jpg`
-    : null
+  const steamAvatarUrl = row?.steamId ? await steamAvatar(row.steamId) : null
   return json({discordAvatarUrl, steamAvatarUrl})
+}
+
+function steamAvatarFromXml(xml: string) {
+  const value = xml.match(/<avatarFull>\s*(?:<!\[CDATA\[)?([^<\s]+?)(?:\]\]>)?\s*<\/avatarFull>/i)?.[1]
+  if (!value) return null
+  try {
+    const url = new URL(value), host = url.hostname.toLowerCase()
+    if (url.protocol !== 'https:' || !(host === 'steamstatic.com' || host.endsWith('.steamstatic.com') || host === 'steamcdn-a.akamaihd.net')) return null
+    return url.href
+  } catch {
+    return null
+  }
+}
+
+async function steamAvatar(steamId: string) {
+  if (!/^\d{17,25}$/.test(steamId)) return null
+  try {
+    const response = await fetch(`https://steamcommunity.com/profiles/${steamId}/?xml=1`, {
+      signal: AbortSignal.timeout(7000),
+      cache: 'no-store',
+    })
+    return response.ok ? steamAvatarFromXml(await response.text()) : null
+  } catch {
+    return null
+  }
 }
 
 async function externalAvatar(discordId: string) {
