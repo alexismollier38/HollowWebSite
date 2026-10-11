@@ -1,4 +1,10 @@
-import {createHash, randomBytes, scrypt as scryptCallback, timingSafeEqual, createHmac} from 'node:crypto'
+import {
+  createHash,
+  randomBytes,
+  scrypt as scryptCallback,
+  timingSafeEqual,
+  createHmac,
+} from 'node:crypto'
 import {neon} from '@neondatabase/serverless'
 import {env} from '@/lib/env'
 
@@ -20,7 +26,9 @@ export function database() {
 }
 
 export function json(data: unknown, status = 200, headers?: HeadersInit) {
-  return headers === undefined ? Response.json(data, {status}) : Response.json(data, {status, headers})
+  return headers === undefined
+    ? Response.json(data, {status})
+    : Response.json(data, {status, headers})
 }
 
 export function error(message: string, status = 400) {
@@ -43,18 +51,36 @@ export function randomToken(bytes = 32) {
   return randomBytes(bytes).toString('base64url')
 }
 
-export async function passwordHash(password: string, salt: Buffer | string = randomBytes(16)) {
+export async function passwordHash(
+  password: string,
+  salt: Buffer | string = randomBytes(16),
+) {
   const key = await new Promise<Buffer>((resolve, reject) => {
-    scryptCallback(password, salt, 64, {N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024}, (error, derived) => error ? reject(error) : resolve(derived as Buffer))
+    scryptCallback(
+      password,
+      salt,
+      64,
+      {N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024},
+      (error, derived) => (error ? reject(error) : resolve(derived as Buffer)),
+    )
   })
-  return {hash: key.toString('hex'), salt: typeof salt === 'string' ? salt : salt.toString('hex')}
+  return {
+    hash: key.toString('hex'),
+    salt: typeof salt === 'string' ? salt : salt.toString('hex'),
+  }
 }
 
-export async function passwordMatches(password: string, storedHash: string, storedSalt: string) {
+export async function passwordMatches(
+  password: string,
+  storedHash: string,
+  storedSalt: string,
+) {
   // Les comptes de l’ancien backend ont un sel base64url ; les nouveaux comptes
   // utilisent l’hexadécimal. Supporter les deux formats permet la migration sans
   // forcer tous les joueurs à réinitialiser leur mot de passe.
-  const salt = /^[0-9a-f]{32}$/i.test(storedSalt) ? Buffer.from(storedSalt, 'hex') : storedSalt
+  const salt = /^[0-9a-f]{32}$/i.test(storedSalt)
+    ? Buffer.from(storedSalt, 'hex')
+    : storedSalt
   const actual = await passwordHash(password, salt)
   const expected = Buffer.from(storedHash, 'hex')
   const received = Buffer.from(actual.hash, 'hex')
@@ -90,17 +116,27 @@ export async function createSession(accountId: string) {
 
 export function publicUser(account: Account) {
   return {
-    id: account.id, username: account.username, email: account.email,
-    discordLinked: account.discordId !== null, discordUsername: account.discordUsername,
-    discordId: account.discordId, steamLinked: account.steamId !== null, steamId: account.steamId,
+    id: account.id,
+    username: account.username,
+    email: account.email,
+    discordLinked: account.discordId !== null,
+    discordUsername: account.discordUsername,
+    discordId: account.discordId,
+    steamLinked: account.steamId !== null,
+    steamId: account.steamId,
   }
 }
 
 export function corsHeaders(origin: string | null) {
-  const allowed = new Set([
-    env.NEXT_PUBLIC_URL_SITE,
-    'tauri://localhost', 'http://localhost:1420', 'http://tauri.localhost', 'https://tauri.localhost',
-  ].filter(Boolean))
+  const allowed = new Set(
+    [
+      env.NEXT_PUBLIC_URL_SITE,
+      'tauri://localhost',
+      'http://localhost:1420',
+      'http://tauri.localhost',
+      'https://tauri.localhost',
+    ].filter(Boolean),
+  )
   const headers = new Headers({
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
@@ -139,8 +175,17 @@ export async function sendCode(email: string, subject: string, code: string) {
     return
   }
   const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST', headers: {'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json'},
-    body: JSON.stringify({from: env.RESEND_FROM_EMAIL, to: [email], subject, html: `<p>Votre code Hollow : <strong>${code}</strong></p><p>Il expire dans 10 minutes.</p>`}),
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: env.RESEND_FROM_EMAIL,
+      to: [email],
+      subject,
+      html: `<p>Votre code Hollow : <strong>${code}</strong></p><p>Il expire dans 10 minutes.</p>`,
+    }),
   })
   if (!response.ok) throw new Error('Email provider rejected the message')
 }
