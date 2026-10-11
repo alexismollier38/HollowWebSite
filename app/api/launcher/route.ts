@@ -154,7 +154,7 @@ async function flow(request: Request) {
   const authorizeUrl =
     provider === 'discord'
       ? `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(env.LAUNCHER_DISCORD_CLIENT_ID ?? '')}&redirect_uri=${encodeURIComponent(`${base}/api/launcher/discord/callback`)}&response_type=code&scope=identify&state=${encodeURIComponent(state)}`
-      : `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(`${base}/api/launcher/steam/callback?state=${state}`)}&openid.realm=${encodeURIComponent(base ?? '')}`
+      : `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(`${base}/api/launcher/steam/callback?state=${encodeURIComponent(state)}`)}&openid.realm=${encodeURIComponent(`${base}/`)}&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select`
   return json({id, secret, authorizeUrl}, 201)
 }
 
