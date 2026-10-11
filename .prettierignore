@@ -1,0 +1,8 @@
+.next
+node_modules
+captures
+playwright-report
+test-results
+.lighthouseci
+pnpm-lock.yaml
+app/fonts

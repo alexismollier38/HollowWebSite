@@ -1,0 +1,35 @@
+{
+  "marque": {
+    "nom": "Hollow",
+    "baseline": "Le grimoire est vierge. Écris-le.",
+    "description": "Serveur roleplay persistant sur nanos.world. Quatre royaumes, un grimoire par mage, aucune histoire écrite d'avance."
+  },
+  "navigation": {
+    "aller_au_contenu": "Aller au contenu",
+    "retour": "Revenir à l'accueil"
+  },
+  "actions": {
+    "discord": "Rejoindre le Discord",
+    "launcher": "Télécharger le launcher"
+  },
+  "pied": {
+    "conditions": "Conditions d'utilisation",
+    "confidentialite": "Politique de confidentialité"
+  },
+  "conditions": {
+    "titre": "Conditions d'utilisation",
+    "en_preparation": "Les conditions complètes sont en cours de rédaction. En attendant, voici ce qui est établi.",
+    "serveur": "Hollow est un serveur de jeu communautaire à but non lucratif, fonctionnant sur nanos.world. L'accès et les règles du jeu se règlent sur le Discord du serveur, qui fait foi.",
+    "marques": "Black Clover est une œuvre de Yūki Tabata, publiée par Shueisha et adaptée par Studio Pierrot. Hollow est un projet de fan, affilié à aucun d'eux, et n'utilise aucun de leurs visuels. Les illustrations et les textes du site sont originaux."
+  },
+  "confidentialite": {
+    "titre": "Politique de confidentialité",
+    "aucun_cookie": "Ce site ne dépose aucun cookie. La langue affichée est déterminée par l'adresse de la page, pas par un identifiant stocké dans votre navigateur.",
+    "aucune_collecte": "Aucun formulaire, aucun compte, aucune mesure d'audience : le site ne collecte aucune donnée personnelle.",
+    "tiers": "Les seules ressources chargées viennent de ce domaine. Les liens vers Discord ouvrent un service tiers, soumis à sa propre politique de confidentialité."
+  },
+  "introuvable": {
+    "titre": "Cette page n'existe pas",
+    "explication": "Le lien est peut-être périmé, ou la page n'a pas encore été écrite."
+  }
+}

@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.github
+captures
+playwright-report
+test-results
+blob-report
+.lighthouseci
+docs
+e2e
+*.log
+.env
+.env.local
+.env.*.local
+README.md

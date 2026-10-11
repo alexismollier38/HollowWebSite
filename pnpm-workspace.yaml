@@ -1,0 +1,10 @@
+# pnpm 11 ne lit plus le champ « pnpm » de package.json : ses réglages vivent ici.
+#
+# Ces trois paquets exécutent un script à l'installation pour poser un binaire natif.
+# Ils font partie de la chaîne d'outils — SWC pour Next, le résolveur d'imports
+# d'ESLint, le surveillant de fichiers — et sont autorisés en connaissance de cause.
+# La liste reste volontairement courte : tout ajout se justifie en revue.
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  unrs-resolver: true

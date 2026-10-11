@@ -1,0 +1,305 @@
+@import 'tailwindcss';
+
+/*
+ * Tokens de Hollow. Miroir exact de `lib/tokens/palette.ts` — `palette.test.ts` relit
+ * ce fichier et échoue si une valeur diverge. Voir docs/DESIGN.md.
+ */
+@theme {
+  /* Fonds */
+  --color-encre: #0a0809;
+  --color-voile: #060507;
+
+  /* Encres */
+  --color-parchemin: oklch(0.93 0.012 85);
+  --color-parchemin-vif: oklch(0.98 0.01 85);
+  --color-estompe-clair: oklch(0.86 0.012 85);
+  --color-estompe: oklch(0.6 0.01 80);
+
+  /* Le rouge, seule couleur du site */
+  --color-braise: oklch(0.62 0.2 25);
+  --color-braise-vif: oklch(0.68 0.2 27);
+  --color-braise-sombre: oklch(0.55 0.2 25);
+
+  /* Teintes de royaume, en réserve pour le lot 3 */
+  --color-clover-trait: #5e8c4a;
+  --color-clover-texte: #8fb86a;
+  --color-diamond-trait: #5c93b4;
+  --color-diamond-texte: #8fbbd4;
+  --color-spade-trait: #7a58af;
+  --color-spade-texte: #ac8ce0;
+  --color-heart-trait: #a85b78;
+  --color-heart-texte: #d68ba5;
+
+  /* Familles. Les variables --police-* viennent de next/font (app/polices.ts). */
+  --font-display: var(--police-display), Manrope, system-ui, sans-serif;
+  --font-corps: var(--police-corps), Manrope, system-ui, sans-serif;
+
+  /* Échelle. Tout est fluide : le hero occupe exactement une hauteur d'écran. */
+  --text-baseline: clamp(0.72rem, 1.05vw, 1.03rem);
+  --text-baseline--line-height: 1.3;
+
+  --text-action: 0.75rem;
+  --text-action--line-height: 1;
+  --text-action--letter-spacing: 0.16em;
+
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.2em;
+
+  --text-mention: 0.625rem;
+  --text-mention--line-height: 1.5;
+  --text-mention--letter-spacing: 0.2em;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-encre);
+    color: var(--color-parchemin);
+    font-family: var(--font-corps);
+    text-wrap: pretty;
+  }
+
+  /*
+   * Focus visible et dessiné. La direction artistique ne prévoyait rien : le rouge
+   * d'accent est le seul choix cohérent, et il tient le seuil de 3:1 sur l'encre.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-braise);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--color-braise-sombre);
+    color: var(--color-parchemin-vif);
+  }
+}
+
+/*
+ * Les animations de la direction artistique. Toutes en CSS : aucune n'est pilotée
+ * image par image en JavaScript.
+ */
+@keyframes apparition {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Panoramique lent sur l'illustration : elle ne doit jamais être tout à fait immobile. */
+@keyframes panoramique {
+  0% {
+    transform: scale(1.06) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.14) translate(-1.4%, -1.2%);
+  }
+}
+
+/* L'orage. Deux éclats rapprochés, puis un long silence. */
+@keyframes eclair {
+  0%,
+  86%,
+  100% {
+    opacity: 0;
+  }
+  87% {
+    opacity: 0.55;
+  }
+  88.5% {
+    opacity: 0.08;
+  }
+  90% {
+    opacity: 0.42;
+  }
+  92% {
+    opacity: 0;
+  }
+}
+
+/* Les braises qui montent et s'éteignent. */
+@keyframes braise-monte {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(18px, -190px) scale(0.35);
+    opacity: 0;
+  }
+}
+
+/* Le halo du mot-symbole, qui respire. */
+@keyframes halo-logo {
+  0%,
+  100% {
+    filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.6))
+      drop-shadow(0 0 22px oklch(0.5 0.2 27 / 0.18));
+  }
+  50% {
+    filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.6))
+      drop-shadow(0 0 40px oklch(0.55 0.21 27 / 0.42));
+  }
+}
+
+/*
+ * Le reflet qui traverse l'action primaire.
+ *
+ * La maquette étalait la traversée sur les 7 secondes entières : le liseré était
+ * visible en permanence et rampait sur le bouton, ce qui se lit comme un défaut
+ * d'affichage. Un reflet est un éclat, pas un convoi. La bande attend donc hors
+ * champ pendant 85 % du cycle et traverse en une seconde.
+ */
+@keyframes reflet {
+  0%,
+  85% {
+    transform: translateX(-140%);
+  }
+  100% {
+    transform: translateX(280%);
+  }
+}
+
+/*
+ * Les voiles de lisibilité, repris de la direction artistique. Ils sont ici et pas
+ * dans le JSX : cinq arrêts de dégradé écrits en attribut `style` seraient illisibles
+ * et impossibles à faire suivre par un token.
+ */
+@utility voile-horizontal {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-voile) 96%, transparent) 0%,
+    color-mix(in srgb, var(--color-voile) 90%, transparent) 24%,
+    color-mix(in srgb, var(--color-voile) 55%, transparent) 46%,
+    color-mix(in srgb, var(--color-voile) 12%, transparent) 68%,
+    color-mix(in srgb, var(--color-voile) 45%, transparent) 100%
+  );
+}
+
+@utility voile-vertical {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-voile) 82%, transparent) 0%,
+    color-mix(in srgb, var(--color-voile) 18%, transparent) 22%,
+    color-mix(in srgb, var(--color-voile) 5%, transparent) 55%,
+    color-mix(in srgb, var(--color-voile) 78%, transparent) 100%
+  );
+}
+
+@utility voile-vignette {
+  background: radial-gradient(
+    120% 85% at 50% 50%,
+    rgb(0 0 0 / 0) 42%,
+    rgb(0 0 0 / 0.62) 100%
+  );
+}
+
+@utility voile-eclair {
+  background: radial-gradient(
+    46% 40% at 30% 8%,
+    color-mix(in srgb, var(--color-braise) 50%, transparent) 0%,
+    rgb(0 0 0 / 0) 70%
+  );
+  animation: eclair 11s linear infinite;
+}
+
+/*
+ * Parallaxe à la souris. Les deux plans bougent en sens inverse à partir des mêmes
+ * variables, posées par un unique composant client sur la section.
+ */
+@utility parallaxe-fond {
+  transform: translate(
+    calc(var(--parallaxe-x, 0) * -26px),
+    calc(var(--parallaxe-y, 0) * -18px)
+  );
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+@utility parallaxe-texte {
+  transform: translate(
+    calc(var(--parallaxe-x, 0) * 9px),
+    calc(var(--parallaxe-y, 0) * 6px)
+  );
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+/*
+ * L'animation du reflet est déclarée ici et non dans le JSX : sa fonction de
+ * temporisation contient des virgules, que la syntaxe des valeurs arbitraires de
+ * Tailwind rend illisible.
+ */
+@utility reflet {
+  animation: reflet 7s cubic-bezier(0.4, 0, 0.15, 1) 2s infinite;
+}
+
+@utility grain {
+  /* feTurbulence encodé une fois, servi en data URI : aucune requête, aucun script. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.055;
+}
+
+@utility action {
+  font-family: var(--font-corps);
+  font-size: var(--text-action);
+  font-weight: 500;
+  line-height: var(--text-action--line-height);
+  letter-spacing: var(--text-action--letter-spacing);
+  text-transform: uppercase;
+}
+
+@utility label {
+  font-family: var(--font-corps);
+  font-size: var(--text-label);
+  font-weight: 500;
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+}
+
+@utility mention {
+  font-family: var(--font-corps);
+  font-size: var(--text-mention);
+  font-weight: 400;
+  line-height: var(--text-mention--line-height);
+  letter-spacing: var(--text-mention--letter-spacing);
+  text-transform: uppercase;
+}
+
+/*
+ * Mouvement réduit : tout s'arrête. La direction artistique ne le prévoyait pas ;
+ * c'est non négociable. La page garde sa composition, elle cesse simplement de bouger.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.12s !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Les braises n'ont plus de trajectoire : autant ne pas les afficher. */
+  [data-braise] {
+    display: none;
+  }
+}

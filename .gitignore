@@ -1,0 +1,32 @@
+# dépendances
+node_modules/
+.pnpm-store/
+
+# build
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# tests
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/captures/
+.lighthouseci/
+
+# environnement
+.env
+.env.local
+.env.*.local
+
+# Fontes Fontshare : licence ITF FFL, auto-hébergement autorisé mais redistribution
+# interdite. `pnpm fonts` les récupère depuis la source officielle.
+/assets/fonts/*.woff2
+
+# système
+.DS_Store
+Thumbs.db
+*.log
