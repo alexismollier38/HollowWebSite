@@ -84,6 +84,19 @@ function steamAvatarFromXml(xml: string) {
   const value = xml.match(
     /<avatarFull>\s*(?:<!\[CDATA\[)?([^<\s]+?)(?:\]\]>)?\s*<\/avatarFull>/i,
   )?.[1]
+  return steamAvatarUrl(value)
+}
+
+function steamAvatarFromHtml(html: string) {
+  const value =
+    html.match(
+      /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+    )?.[1] ??
+    html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i)?.[1]
+  return steamAvatarUrl(value?.replace(/&amp;/g, '&'))
+}
+
+function steamAvatarUrl(value: string | undefined) {
   if (!value) return null
   try {
     const url = new URL(value),
@@ -113,7 +126,9 @@ async function steamAvatar(steamId: string) {
         cache: 'no-store',
       },
     )
-    return response.ok ? steamAvatarFromXml(await response.text()) : null
+    if (!response.ok) return null
+    const body = await response.text()
+    return steamAvatarFromXml(body) ?? steamAvatarFromHtml(body)
   } catch {
     return null
   }
