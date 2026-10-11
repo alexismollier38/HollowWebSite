@@ -18,6 +18,7 @@ import {
   hash,
   randomToken,
   ensureAuxiliarySchema,
+  publicUser,
 } from '@/lib/launcher/_shared'
 import {randomUUID} from 'node:crypto'
 import {env} from '@/lib/env'
