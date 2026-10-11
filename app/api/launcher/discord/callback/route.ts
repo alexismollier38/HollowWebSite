@@ -1,4 +1,4 @@
-import {database, error, hash} from '@/lib/launcher/_shared'
+import {database, error, hash, oauthHtmlResult} from '@/lib/launcher/_shared'
 import {env} from '@/lib/env'
 
 export const runtime = 'nodejs'
@@ -19,5 +19,5 @@ export async function GET(request: Request) {
   const discordUser = await userResponse.json() as {id: string; username: string}
   await sql`update launcher_accounts set discord_id = ${discordUser.id}, discord_username = ${discordUser.username}, discord_linked_at = now(), updated_at = now() where id = ${flow.accountId}`
   await sql`update launcher_oauth_flows set completed_at = now() where id = ${flow.id}`
-  return new Response('<!doctype html><title>Hollow</title><p>La liaison Discord est terminée. Vous pouvez fermer cette fenêtre.</p>', {headers: {'Content-Type': 'text/html; charset=utf-8'}})
+  return oauthHtmlResult(true, 'La liaison Discord est terminée. Vous pouvez fermer cette fenêtre.')
 }
