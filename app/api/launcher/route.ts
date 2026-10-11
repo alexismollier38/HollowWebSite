@@ -81,11 +81,22 @@ async function avatars(request: Request) {
 }
 
 function steamAvatarFromXml(xml: string) {
-  const value = xml.match(/<avatarFull>\s*(?:<!\[CDATA\[)?([^<\s]+?)(?:\]\]>)?\s*<\/avatarFull>/i)?.[1]
+  const value = xml.match(
+    /<avatarFull>\s*(?:<!\[CDATA\[)?([^<\s]+?)(?:\]\]>)?\s*<\/avatarFull>/i,
+  )?.[1]
   if (!value) return null
   try {
-    const url = new URL(value), host = url.hostname.toLowerCase()
-    if (url.protocol !== 'https:' || !(host === 'steamstatic.com' || host.endsWith('.steamstatic.com') || host === 'steamcdn-a.akamaihd.net')) return null
+    const url = new URL(value),
+      host = url.hostname.toLowerCase()
+    if (
+      url.protocol !== 'https:' ||
+      !(
+        host === 'steamstatic.com' ||
+        host.endsWith('.steamstatic.com') ||
+        host === 'steamcdn-a.akamaihd.net'
+      )
+    )
+      return null
     return url.href
   } catch {
     return null
@@ -95,10 +106,13 @@ function steamAvatarFromXml(xml: string) {
 async function steamAvatar(steamId: string) {
   if (!/^\d{17,25}$/.test(steamId)) return null
   try {
-    const response = await fetch(`https://steamcommunity.com/profiles/${steamId}/?xml=1`, {
-      signal: AbortSignal.timeout(7000),
-      cache: 'no-store',
-    })
+    const response = await fetch(
+      `https://steamcommunity.com/profiles/${steamId}/?xml=1`,
+      {
+        signal: AbortSignal.timeout(7000),
+        cache: 'no-store',
+      },
+    )
     return response.ok ? steamAvatarFromXml(await response.text()) : null
   } catch {
     return null
@@ -128,7 +142,12 @@ async function ticket(request: Request, reply = false) {
       ...body,
       accountId: account.id,
       requesterDiscordId: account.discordId,
-      ...(reply ? {reply: true} : {}),
+      ...(reply
+        ? {
+            playerReply: true,
+            requesterName: account.username,
+          }
+        : {}),
     }
   if (reply && !account.discordId) return error('Un compte Discord lié est requis', 403)
   const response = await fetch('https://hollow-adminstration.vercel.app/api/tickets', {
