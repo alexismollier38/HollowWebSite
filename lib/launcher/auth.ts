@@ -44,7 +44,12 @@ export async function verifyEmail(request: Request) {
 }
 
 export async function login(request: Request) {
-  const body = await parseJson(request), identity = stringField(body, 'identity'), password = stringField(body, 'password')
+  const body = await parseJson(request)
+  // Le launcher historique envoie `username`, tandis que le contrat public utilise
+  // `identity`. Accepter aussi `email` évite un 401 trompeur lorsque le client est
+  // encore sur l’ancien contrat.
+  const identity = stringField(body, 'identity') || stringField(body, 'username') || stringField(body, 'email')
+  const password = stringField(body, 'password')
   const sql = database(), rows = await sql`select id, username, email, password_hash as "passwordHash", password_salt as "passwordSalt", discord_id as "discordId", discord_username as "discordUsername", steam_id as "steamId" from launcher_accounts where lower(username) = lower(${identity}) or lower(email) = lower(${identity}) limit 1`
   const account = rows[0] as (Parameters<typeof publicUser>[0] & {passwordHash: string; passwordSalt: string}) | undefined
   if (!account || !(await passwordMatches(password, account.passwordHash, account.passwordSalt))) return error('Identifiants invalides', 401)
