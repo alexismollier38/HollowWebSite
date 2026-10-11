@@ -181,14 +181,16 @@ export async function sendCode(email: string, subject: string, code: string) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: env.RESEND_FROM_EMAIL,
+      from: `Hollow <${env.RESEND_FROM_EMAIL}>`,
       to: [email],
       subject,
       html: codeEmailHtml({
         code,
-        purpose: subject.toLowerCase().includes('réinitial') || subject.toLowerCase().includes('reset')
-          ? 'password-reset'
-          : 'email-verification',
+        purpose:
+          subject.toLowerCase().includes('réinitial') ||
+          subject.toLowerCase().includes('reset')
+            ? 'password-reset'
+            : 'email-verification',
       }),
     }),
   })
@@ -196,29 +198,42 @@ export async function sendCode(email: string, subject: string, code: string) {
 }
 
 function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, (character) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-  })[character] ?? character)
+  return value.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[character] ?? character,
+  )
 }
 
 export function oauthHtmlResult(success: boolean, message: string) {
   const title = success ? 'Liaison terminée' : 'Liaison impossible'
   const accent = success ? '#6ee7a0' : '#ff5668'
   const safeMessage = escapeHtml(message)
-  return new Response(`<!doctype html>
+  return new Response(
+    `<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#100507"><title>${title} — Hollow RP</title>
 <style>:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,sans-serif}*{box-sizing:border-box}body{min-height:100vh;margin:0;display:grid;place-items:center;color:#f8eeee;background:#000}body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 50% 42%,rgba(105,0,0,.22),transparent 34%),radial-gradient(circle at 12% 88%,rgba(105,0,0,.13),transparent 34%)}.shell{position:relative;z-index:1;width:min(560px,calc(100vw - 32px));padding:1px;border-radius:28px;background:linear-gradient(145deg,rgba(105,0,0,.85),rgba(105,0,0,.22) 48%,rgba(255,255,255,.08));box-shadow:0 28px 90px #000,0 0 80px rgba(105,0,0,.12)}.card{overflow:hidden;padding:42px 34px 36px;border-radius:27px;text-align:center;background:linear-gradient(145deg,#000,#030000 56%,#180000)}.logo{width:min(270px,72vw);margin:0 auto 24px;display:block}.badge{width:58px;height:58px;margin:0 auto 18px;display:grid;place-items:center;border:1px solid ${accent};border-radius:50%;color:${accent};font-size:28px}h1{margin:0;color:${accent};font-family:Georgia,serif;font-size:clamp(27px,5vw,38px);font-weight:600}.message{margin:16px auto 0;max-width:400px;color:#eadcdd;font-size:16px;line-height:1.7}.hint{margin:9px 0 28px;color:#a99699;font-size:13px}.button{display:inline-flex;align-items:center;justify-content:center;min-width:280px;min-height:48px;padding:0 24px;border-radius:6px;color:#fff;background:#bd0000;font-size:13px;font-weight:800;text-transform:uppercase;text-decoration:none}.footer{margin-top:26px;color:#806e71;font-size:11px;letter-spacing:.1em;text-transform:uppercase}</style></head>
-<body><main class="shell"><section class="card" aria-live="polite"><img class="logo" src="${env.NEXT_PUBLIC_URL_SITE}/images/logo-hollow.png" alt="Hollow RP"><div class="badge" aria-hidden="true">${success ? '✓' : '!'}</div><h1>${title}</h1><p class="message">${safeMessage}</p><p class="hint">Tu peux maintenant revenir au launcher Hollow.</p><a class="button" href="${env.NEXT_PUBLIC_URL_SITE}">← Retourner sur Hollow</a><div class="footer">Hollow RP · Ton histoire commence ici</div></section></main></body></html>`, {
-    status: success ? 200 : 400,
-    headers: {'Content-Type': 'text/html; charset=utf-8'},
-  })
+<body><main class="shell"><section class="card" aria-live="polite"><img class="logo" src="${env.NEXT_PUBLIC_URL_SITE}/images/logo-hollow.png" alt="Hollow RP"><div class="badge" aria-hidden="true">${success ? '✓' : '!'}</div><h1>${title}</h1><p class="message">${safeMessage}</p><p class="hint">Tu peux maintenant revenir au launcher Hollow.</p><a class="button" href="${env.NEXT_PUBLIC_URL_SITE}">← Retourner sur Hollow</a><div class="footer">Hollow RP · Ton histoire commence ici</div></section></main></body></html>`,
+    {
+      status: success ? 200 : 400,
+      headers: {'Content-Type': 'text/html; charset=utf-8'},
+    },
+  )
 }
 
-export function codeEmailHtml({code, purpose}: {code: string; purpose: 'email-verification' | 'password-reset'}) {
+export function codeEmailHtml({
+  code,
+  purpose,
+}: {
+  code: string
+  purpose: 'email-verification' | 'password-reset'
+}) {
   const isReset = purpose === 'password-reset'
   const eyebrow = isReset ? 'Sécurité du compte' : "Bienvenue dans l'univers Hollow"
   const title = isReset ? 'Réinitialise ton mot de passe' : 'Confirme ton adresse e-mail'
