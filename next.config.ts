@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
   // Docker utilise l'image autonome ; Vercel gère déjà son propre bundling.
   // Next.js 16.3 ne produit pas le manifeste attendu par l'adaptateur Vercel
   // lorsque `output: 'standalone'` est activé.
-  output: process.env.VERCEL ? undefined : 'standalone',
+  ...(process.env.VERCEL ? {} : {output: 'standalone' as const}),
 
   experimental: {sri: {algorithm: 'sha256'}},
   reactStrictMode: true,
