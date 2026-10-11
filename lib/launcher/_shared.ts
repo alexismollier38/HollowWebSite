@@ -43,15 +43,19 @@ export function randomToken(bytes = 32) {
   return randomBytes(bytes).toString('base64url')
 }
 
-export async function passwordHash(password: string, salt = randomBytes(16)) {
+export async function passwordHash(password: string, salt: Buffer | string = randomBytes(16)) {
   const key = await new Promise<Buffer>((resolve, reject) => {
-    scryptCallback(password, salt, 64, {N: 16384, r: 8, p: 1}, (error, derived) => error ? reject(error) : resolve(derived as Buffer))
+    scryptCallback(password, salt, 64, {N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024}, (error, derived) => error ? reject(error) : resolve(derived as Buffer))
   })
-  return {hash: key.toString('hex'), salt: salt.toString('hex')}
+  return {hash: key.toString('hex'), salt: typeof salt === 'string' ? salt : salt.toString('hex')}
 }
 
 export async function passwordMatches(password: string, storedHash: string, storedSalt: string) {
-  const actual = await passwordHash(password, Buffer.from(storedSalt, 'hex'))
+  // Les comptes de l’ancien backend ont un sel base64url ; les nouveaux comptes
+  // utilisent l’hexadécimal. Supporter les deux formats permet la migration sans
+  // forcer tous les joueurs à réinitialiser leur mot de passe.
+  const salt = /^[0-9a-f]{32}$/i.test(storedSalt) ? Buffer.from(storedSalt, 'hex') : storedSalt
+  const actual = await passwordHash(password, salt)
   const expected = Buffer.from(storedHash, 'hex')
   const received = Buffer.from(actual.hash, 'hex')
   return expected.length === received.length && timingSafeEqual(expected, received)
