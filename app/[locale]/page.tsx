@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import {useTranslations} from 'next-intl'
 import {setRequestLocale} from 'next-intl/server'
-import fondHero from '@/assets/images/fond-hero.png'
 import motSymbole from '@/assets/images/logo-hollow.png'
 import {BarreHaute} from '@/components/chrome/BarreHaute'
 import {MentionsBas} from '@/components/chrome/MentionsBas'
@@ -41,24 +40,9 @@ function Hero() {
            * un zoom à 200 % — fasse grandir la section et défiler la page plutôt que de
            * rogner le contenu. L'original bloquait le défilement ; on ne peut pas.
            */
-          className="relative h-svh min-h-[40rem] overflow-hidden bg-encre"
+          className="relative h-svh min-h-[40rem] overflow-hidden bg-black"
         >
-          {/* L'image reste fixe ; les voiles et les effets sont posés par-dessus. */}
-          <div className="absolute inset-0">
-            <div className="absolute inset-0">
-              <Image
-                src={fondHero}
-                alt=""
-                fill
-                priority
-                sizes="112vw"
-                quality={75}
-                className="object-cover object-[72%_42%]"
-              />
-            </div>
-          </div>
-
-          {/* Les voiles. Dans cet ordre : latéral, vertical, vignette, grain, orage. */}
+          {/* Fond noir temporaire ; les voiles et les effets restent disponibles. */}
           <div
             aria-hidden="true"
             className="voile-horizontal pointer-events-none absolute inset-0"
