@@ -95,22 +95,6 @@ function Hero() {
 
             <div className="mt-[clamp(2px,0.8vh,10px)] flex animate-[apparition_0.9s_cubic-bezier(0.2,0.7,0.2,1)_0.55s_both] flex-wrap items-center justify-center gap-[clamp(16px,2vw,30px)]">
               <a
-                href={env.NEXT_PUBLIC_URL_DISCORD}
-                rel="noreferrer noopener"
-                target="_blank"
-                className="action relative flex items-center gap-[13px] overflow-hidden border border-parchemin/25 bg-encre/55 px-8 py-[15px] text-parchemin-vif shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_14px_40px_rgb(0_0_0/0.5)] backdrop-blur-[10px] transition-[border-color,background-color,transform] hover:-translate-y-0.5 hover:border-braise/85 hover:bg-braise-sombre/20 focus-visible:-translate-y-0.5 focus-visible:border-braise"
-              >
-                {/*
-                  Le reflet : un éclat d'une seconde toutes les sept, incliné comme
-                  dans la maquette. Il attend hors champ le reste du temps.
-                */}
-                <span
-                  aria-hidden="true"
-                  className="reflet pointer-events-none absolute inset-y-0 left-0 w-[38%] bg-linear-100 from-transparent via-parchemin/25 to-transparent"
-                />
-                {t('actions.discord')}
-              </a>
-              <a
                 href={env.NEXT_PUBLIC_URL_LAUNCHER}
                 rel="noreferrer noopener"
                 target="_blank"
