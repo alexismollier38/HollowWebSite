@@ -50,22 +50,6 @@ function Hero() {
               />
             </h1>
 
-            {/*
-          Sur grand écran, la baseline est décalée sous la moitié droite du mot-symbole
-          et remonte dans son ombre : c'est ce décalage qui empêche l'ensemble de
-          ressembler à un logo centré au-dessus d'un sous-titre centré.
-
-          Sous 768 px, le décalage est abandonné. Il faisait chevaucher la phrase et le
-          mot-symbole, et une ligne insécable débordait de l'écran. La composition de
-          référence a été dessinée pour un écran large ; la majorité du public arrive
-          de Discord, sur un téléphone.
-        */}
-            <p className="w-[min(600px,100%)] md:-mt-[clamp(26px,6vh,52px)]">
-              <span className="block text-center font-display text-baseline text-parchemin [text-shadow:0_1px_2px_rgb(0_0_0/0.95),0_2px_18px_rgb(0_0_0/0.9)] md:pl-[46.5%] md:text-left md:whitespace-nowrap">
-                {t('marque.baseline')}
-              </span>
-            </p>
-
             <div className="mt-[clamp(2px,0.8vh,10px)] flex flex-wrap items-center justify-center gap-[clamp(16px,2vw,30px)]">
               <a
                 href={env.NEXT_PUBLIC_URL_LAUNCHER}
