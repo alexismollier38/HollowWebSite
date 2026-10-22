@@ -15,10 +15,10 @@
   --color-estompe-clair: oklch(0.86 0.012 85);
   --color-estompe: oklch(0.6 0.01 80);
 
-  /* Le rouge, seule couleur du site */
-  --color-braise: oklch(0.62 0.2 25);
-  --color-braise-vif: oklch(0.68 0.2 27);
-  --color-braise-sombre: oklch(0.55 0.2 25);
+  /* Accent monochrome */
+  --color-braise: oklch(0.78 0 0);
+  --color-braise-vif: oklch(0.92 0 0);
+  --color-braise-sombre: oklch(0.42 0 0);
 
   /* Teintes de royaume, en réserve pour le lot 3 */
   --color-clover-trait: #5e8c4a;
@@ -64,8 +64,7 @@
   }
 
   /*
-   * Focus visible et dessiné. La direction artistique ne prévoyait rien : le rouge
-   * d'accent est le seul choix cohérent, et il tient le seuil de 3:1 sur l'encre.
+   * Focus visible et dessiné avec l'accent monochrome du site.
    */
   :focus-visible {
     outline: 2px solid var(--color-braise);
@@ -108,73 +107,6 @@
   }
 }
 
-/* L'orage. Deux éclats rapprochés, puis un long silence. */
-@keyframes eclair {
-  0%,
-  86%,
-  100% {
-    opacity: 0;
-  }
-  87% {
-    opacity: 0.55;
-  }
-  88.5% {
-    opacity: 0.08;
-  }
-  90% {
-    opacity: 0.42;
-  }
-  92% {
-    opacity: 0;
-  }
-}
-
-/* Les braises qui montent et s'éteignent. */
-@keyframes braise-monte {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.9;
-  }
-  100% {
-    transform: translate(18px, -190px) scale(0.35);
-    opacity: 0;
-  }
-}
-
-/* Le halo du mot-symbole, qui respire. */
-@keyframes halo-logo {
-  0%,
-  100% {
-    filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.6))
-      drop-shadow(0 0 22px oklch(0.5 0.2 27 / 0.18));
-  }
-  50% {
-    filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.6))
-      drop-shadow(0 0 40px oklch(0.55 0.21 27 / 0.42));
-  }
-}
-
-/*
- * Le reflet qui traverse l'action primaire.
- *
- * La maquette étalait la traversée sur les 7 secondes entières : le liseré était
- * visible en permanence et rampait sur le bouton, ce qui se lit comme un défaut
- * d'affichage. Un reflet est un éclat, pas un convoi. La bande attend donc hors
- * champ pendant 85 % du cycle et traverse en une seconde.
- */
-@keyframes reflet {
-  0%,
-  85% {
-    transform: translateX(-140%);
-  }
-  100% {
-    transform: translateX(280%);
-  }
-}
-
 /*
  * Les voiles de lisibilité, repris de la direction artistique. Ils sont ici et pas
  * dans le JSX : cinq arrêts de dégradé écrits en attribut `style` seraient illisibles
@@ -209,15 +141,6 @@
   );
 }
 
-@utility voile-eclair {
-  background: radial-gradient(
-    46% 40% at 30% 8%,
-    color-mix(in srgb, var(--color-braise) 50%, transparent) 0%,
-    rgb(0 0 0 / 0) 70%
-  );
-  animation: eclair 11s linear infinite;
-}
-
 /*
  * Parallaxe à la souris. Les deux plans bougent en sens inverse à partir des mêmes
  * variables, posées par un unique composant client sur la section.
@@ -238,15 +161,6 @@
   );
   transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
   will-change: transform;
-}
-
-/*
- * L'animation du reflet est déclarée ici et non dans le JSX : sa fonction de
- * temporisation contient des virgules, que la syntaxe des valeurs arbitraires de
- * Tailwind rend illisible.
- */
-@utility reflet {
-  animation: reflet 7s cubic-bezier(0.4, 0, 0.15, 1) 2s infinite;
 }
 
 @utility grain {
@@ -296,10 +210,5 @@
     animation-delay: 0ms !important;
     transition-duration: 0.12s !important;
     scroll-behavior: auto !important;
-  }
-
-  /* Les braises n'ont plus de trajectoire : autant ne pas les afficher. */
-  [data-braise] {
-    display: none;
   }
 }

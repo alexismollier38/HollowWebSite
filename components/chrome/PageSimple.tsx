@@ -37,7 +37,7 @@ export function PageSimple({
         <Link
           href="/"
           locale={locale}
-          className="label inline-flex min-h-6 items-center border-b border-parchemin/20 pb-1 text-estompe transition-colors hover:border-braise hover:text-parchemin focus-visible:border-braise focus-visible:text-parchemin"
+          className="label inline-flex min-h-6 items-center border-b border-parchemin/20 pb-1 text-estompe transition-colors hover:border-parchemin hover:text-parchemin focus-visible:border-parchemin focus-visible:text-parchemin"
         >
           {t('navigation.retour')}
         </Link>

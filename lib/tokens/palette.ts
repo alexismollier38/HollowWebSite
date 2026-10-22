@@ -32,16 +32,15 @@ export const textes = {
 } as const
 
 /**
- * Le rouge. C'est la seule couleur du site, et elle vient du logo : le trèfle du
- * mot-symbole, l'orage, les braises. Trois valeurs, trois emplois.
+ * Accent neutre monochrome, utilisé pour les états interactifs historiques.
  */
 export const braises = {
-  /** Accent : bordure au survol, éclair, anneau de focus. */
-  braise: 'oklch(0.62 0.2 25)',
-  /** Particules montantes. */
-  braiseVif: 'oklch(0.68 0.2 27)',
+  /** Accent neutre : bordure et anneau de focus. */
+  braise: 'oklch(0.78 0 0)',
+  /** Accent clair historique des particules. */
+  braiseVif: 'oklch(0.92 0 0)',
   /** Séparateurs et sélection de texte. */
-  braiseSombre: 'oklch(0.55 0.2 25)',
+  braiseSombre: 'oklch(0.42 0 0)',
 } as const
 
 /**
