@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import {useTranslations} from 'next-intl'
 import {setRequestLocale} from 'next-intl/server'
+import fondHero from '@/assets/images/fond-hero.png'
 import motSymbole from '@/assets/images/logo-hollow.png'
 import {BarreHaute} from '@/components/chrome/BarreHaute'
 import {MentionsBas} from '@/components/chrome/MentionsBas'
@@ -39,7 +40,18 @@ function Hero() {
            */
           className="relative h-svh min-h-[40rem] overflow-hidden bg-black"
         >
-          <div className="relative flex h-full w-[min(680px,88%)] flex-col items-center justify-center gap-[clamp(16px,2.6vh,28px)] px-4 md:w-[min(680px,62%)] md:px-[clamp(28px,4.4vw,64px)]">
+          <Image
+            src={fondHero}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            aria-hidden="true"
+            className="object-cover"
+          />
+          <div aria-hidden="true" className="absolute inset-0 bg-black/55" />
+
+          <div className="relative z-10 flex h-full w-[min(680px,88%)] flex-col items-center justify-center gap-[clamp(16px,2.6vh,28px)] px-4 md:w-[min(680px,62%)] md:px-[clamp(28px,4.4vw,64px)]">
             <h1 id="titre-entree" className="w-full">
               <Image
                 src={motSymbole}
