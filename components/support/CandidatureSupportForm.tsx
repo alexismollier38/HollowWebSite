@@ -5,7 +5,7 @@ import {useState} from 'react'
 import type {FormEvent} from 'react'
 import captureDiscord from '@/assets/images/support-discord-id.png'
 
-type FormState = 'idle' | 'sending' | 'success' | 'error'
+type FormState = 'idle' | 'sending'
 
 const champsVides = {
   discordId: '',
@@ -19,20 +19,17 @@ const champsVides = {
 export function CandidatureSupportForm() {
   const [values, setValues] = useState(champsVides)
   const [state, setState] = useState<FormState>('idle')
-  const [message, setMessage] = useState('')
 
   const update = (field: keyof typeof champsVides, value: string) => {
     setValues((current) => ({...current, [field]: value}))
     if (state !== 'idle') {
       setState('idle')
-      setMessage('')
     }
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setState('sending')
-    setMessage('')
 
     try {
       const response = await fetch('/api/support-application', {
@@ -46,12 +43,9 @@ export function CandidatureSupportForm() {
         throw new Error(result.message || 'Impossible d’envoyer la candidature.')
       }
 
-      setValues(champsVides)
-      setState('success')
-      setMessage('Merci ! Ta candidature a bien été envoyée à l’équipe Hollow.')
-    } catch (error) {
-      setState('error')
-      setMessage(error instanceof Error ? error.message : 'Une erreur est survenue.')
+      window.location.assign(confirmationPath('success'))
+    } catch {
+      window.location.assign(confirmationPath('error'))
     }
   }
 
@@ -148,15 +142,14 @@ export function CandidatureSupportForm() {
         >
           {state === 'sending' ? 'Envoi en cours...' : 'Envoyer ma candidature'}
         </button>
-        <p
-          aria-live="polite"
-          className={`text-sm ${state === 'error' ? 'text-support-or-clair' : 'text-support-or-clair'}`}
-        >
-          {message}
-        </p>
       </div>
     </form>
   )
+}
+
+function confirmationPath(status: 'success' | 'error') {
+  const localePrefix = window.location.pathname.startsWith('/en/') ? '/en' : ''
+  return `${localePrefix}/support-candidature/confirmation?status=${status}`
 }
 
 function Question({
