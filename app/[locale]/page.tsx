@@ -5,7 +5,6 @@ import fondHero from '@/assets/images/fond-hero.png'
 import motSymbole from '@/assets/images/logo-hollow.png'
 import {BarreHaute} from '@/components/chrome/BarreHaute'
 import {MentionsBas} from '@/components/chrome/MentionsBas'
-import {env} from '@/lib/env'
 
 /**
  * Page d'accueil — un seul écran, celui du hero.
@@ -63,14 +62,13 @@ function Hero() {
             </h1>
 
             <div className="mt-[clamp(2px,0.8vh,10px)] flex flex-wrap items-center justify-center gap-[clamp(16px,2vw,30px)]">
-              <a
-                href={env.NEXT_PUBLIC_URL_LAUNCHER}
-                rel="noreferrer noopener"
-                target="_blank"
+              <button
+                type="button"
+                aria-disabled="true"
                 className="action flex items-center gap-[13px] border border-parchemin/25 bg-encre/55 px-8 py-[15px] text-parchemin-vif shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_14px_40px_rgb(0_0_0/0.5)] backdrop-blur-[10px] transition-colors hover:border-parchemin hover:bg-parchemin/10 focus-visible:border-parchemin"
               >
                 {t('actions.launcher')}
-              </a>
+              </button>
             </div>
           </div>
         </section>
