@@ -51,6 +51,19 @@
   --text-mention--letter-spacing: 0.2em;
 }
 
+@utility champ-candidature {
+  width: 100%;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 0.04);
+  padding: 0.9rem 1rem;
+  color: var(--color-parchemin-vif);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
 @layer base {
   html {
     color-scheme: dark;
