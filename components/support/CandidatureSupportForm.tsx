@@ -4,8 +4,9 @@ import Image from 'next/image'
 import {useState} from 'react'
 import type {FormEvent} from 'react'
 import captureDiscord from '@/assets/images/support-discord-id.png'
+import logoSupport from '@/assets/images/logo-support.png'
 
-type FormState = 'idle' | 'sending'
+type FormState = 'idle' | 'sending' | 'success' | 'error'
 
 const champsVides = {
   discordId: '',
@@ -19,17 +20,20 @@ const champsVides = {
 export function CandidatureSupportForm() {
   const [values, setValues] = useState(champsVides)
   const [state, setState] = useState<FormState>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const update = (field: keyof typeof champsVides, value: string) => {
     setValues((current) => ({...current, [field]: value}))
     if (state !== 'idle') {
       setState('idle')
+      setErrorMessage('')
     }
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setState('sending')
+    setErrorMessage('')
 
     try {
       const response = await fetch('/api/support-application', {
@@ -43,10 +47,51 @@ export function CandidatureSupportForm() {
         throw new Error(result.message || 'Impossible d’envoyer la candidature.')
       }
 
-      window.location.assign(confirmationPath('success'))
-    } catch {
-      window.location.assign(confirmationPath('error'))
+      setState('success')
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Impossible d’envoyer la candidature. Réessaie plus tard.',
+      )
+      setState('error')
     }
+  }
+
+  if (state === 'success' || state === 'error') {
+    const success = state === 'success'
+
+    return (
+      <section className="support-panel space-y-6 text-center" aria-live="polite">
+        <Image
+          src={logoSupport}
+          alt="Hollow Recrutement Support"
+          width={220}
+          className="mx-auto h-auto w-44"
+        />
+        <div className="space-y-3">
+          <h2 className="text-3xl font-semibold text-support-or-clair">
+            {success ? 'Formulaire envoyé' : 'Envoi impossible'}
+          </h2>
+          <p className="text-support-or/80">
+            {success
+              ? 'Ta candidature a bien été transmise à l’équipe de modération.'
+              : errorMessage || 'Une erreur est survenue pendant l’envoi.'}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setValues(champsVides)
+            setErrorMessage('')
+            setState('idle')
+          }}
+          className="action rounded-md border border-support-or/60 px-6 py-3 text-support-or-clair transition-colors hover:bg-support-or/10"
+        >
+          {success ? 'Envoyer une autre candidature' : 'Modifier ma candidature'}
+        </button>
+      </section>
+    )
   }
 
   return (
@@ -145,12 +190,6 @@ export function CandidatureSupportForm() {
       </div>
     </form>
   )
-}
-
-function confirmationPath(status: 'success' | 'error') {
-  const localePrefix = window.location.pathname.startsWith('/en/') ? '/en' : ''
-  const route = localePrefix ? '/support-application' : '/support-candidature'
-  return `${localePrefix}${route}/confirmation?status=${status}`
 }
 
 function Question({
