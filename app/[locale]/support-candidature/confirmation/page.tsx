@@ -20,7 +20,7 @@ export default async function SupportApplicationConfirmationPage({
   setRequestLocale(locale)
 
   const success = status === 'success'
-  const formPath = locale === 'en' ? '/en/support-candidature' : '/support-candidature'
+  const formPath = locale === 'en' ? '/en/support-application' : '/support-candidature'
 
   return (
     <main

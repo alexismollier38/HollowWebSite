@@ -149,7 +149,8 @@ export function CandidatureSupportForm() {
 
 function confirmationPath(status: 'success' | 'error') {
   const localePrefix = window.location.pathname.startsWith('/en/') ? '/en' : ''
-  return `${localePrefix}/support-candidature/confirmation?status=${status}`
+  const route = localePrefix ? '/support-application' : '/support-candidature'
+  return `${localePrefix}${route}/confirmation?status=${status}`
 }
 
 function Question({

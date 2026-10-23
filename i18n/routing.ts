@@ -32,6 +32,14 @@ export const routing = defineRouting({
     '/': '/',
     '/conditions-utilisation': {fr: '/conditions-utilisation', en: '/terms-of-use'},
     '/confidentialite': {fr: '/confidentialite', en: '/privacy'},
+    '/support-candidature': {
+      fr: '/support-candidature',
+      en: '/support-application',
+    },
+    '/support-candidature/confirmation': {
+      fr: '/support-candidature/confirmation',
+      en: '/support-application/confirmation',
+    },
   },
 })
 
