@@ -15,7 +15,11 @@
   "support": {
     "required_fields": "Fields marked with an asterisk are required.",
     "discord_help": "Right-click your username and copy your user ID",
-    "success_message": "Your application has been sent to the moderation team."
+    "success_message": "Your application has been sent to the moderation team.",
+    "applications_closed": "Support applications are closed",
+    "applications_closed_description": "We are not accepting new applications right now. Please check back later.",
+    "applications_unavailable": "Form temporarily unavailable",
+    "applications_unavailable_description": "We cannot check whether applications are open right now. Please try again later."
   },
   "pied": {
     "conditions": "Terms of use",

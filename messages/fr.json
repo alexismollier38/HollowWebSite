@@ -15,7 +15,11 @@
   "support": {
     "required_fields": "Les champs marqués d’un astérisque sont obligatoires.",
     "discord_help": "Clic droit sur ton pseudo + copier l’ID de l’utilisateur",
-    "success_message": "Ta candidature a bien été transmise à l’équipe de modération."
+    "success_message": "Ta candidature a bien été transmise à l’équipe de modération.",
+    "applications_closed": "Candidatures Support fermées",
+    "applications_closed_description": "Nous ne recevons plus de nouvelles candidatures pour le moment. Reviens consulter cette page plus tard.",
+    "applications_unavailable": "Formulaire temporairement indisponible",
+    "applications_unavailable_description": "Impossible de vérifier l’ouverture des candidatures pour le moment. Réessaie plus tard."
   },
   "pied": {
     "conditions": "Conditions d'utilisation",

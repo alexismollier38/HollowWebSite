@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server'
 import {z} from 'zod'
-import {env} from '@/lib/env'
+import {getSupportIntakeOpen, supportApiUrl, supportToken} from '@/lib/support-intake'
 
 function dateValide(value: string) {
   const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value)
@@ -43,8 +43,11 @@ const candidature = z.object({
   contribution: reponse,
 })
 
-const defaultSupportApiUrl =
-  'https://hollow-adminstration.vercel.app/api/recruitment?scope=support'
+export async function GET() {
+  const open = await getSupportIntakeOpen()
+  if (open === null) return NextResponse.json({open: false}, {status: 503})
+  return NextResponse.json({open}, {headers: {'Cache-Control': 'no-store'}})
+}
 
 export async function POST(request: Request) {
   const parsed = candidature.safeParse(await request.json().catch(() => null))
@@ -60,7 +63,7 @@ export async function POST(request: Request) {
     )
   }
 
-  const token = process.env.SUPPORT_API_TOKEN ?? env.TICKETS_API_TOKEN
+  const token = supportToken()
   if (!token) {
     return NextResponse.json(
       {message: 'Le formulaire n’est pas encore connecté au site de modération.'},
@@ -68,7 +71,7 @@ export async function POST(request: Request) {
     )
   }
 
-  const response = await fetch(process.env.SUPPORT_API_URL ?? defaultSupportApiUrl, {
+  const response = await fetch(supportApiUrl(), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -84,6 +87,12 @@ export async function POST(request: Request) {
   })
 
   if (!response.ok) {
+    if (response.status === 423) {
+      return NextResponse.json(
+        {message: 'Les candidatures Support sont actuellement fermées.'},
+        {status: 423},
+      )
+    }
     return NextResponse.json(
       {message: 'Le site de modération a refusé la candidature. Réessaie plus tard.'},
       {status: response.status >= 500 ? 502 : response.status},
