@@ -64,3 +64,57 @@ test('la confirmation et le formulaire anglais ont un nonce CSP', async ({reques
     }
   }
 })
+
+test('l’API précise les champs invalides avant tout envoi à la modération', async ({
+  request,
+}) => {
+  const response = await request.post('/api/support-application', {
+    data: {
+      discordId: 'test',
+      age: '20',
+      birthDate: '31/02/2006',
+      presentation: 'Court',
+      motivations: 'Je souhaite aider les joueurs.',
+      contribution: 'Je peux contribuer au serveur.',
+    },
+  })
+
+  expect(response.status()).toBe(400)
+  const result = (await response.json()) as {fields: Record<string, string>}
+  expect(result.fields.discordId).toContain('17 à 20 chiffres')
+  expect(result.fields.birthDate).toContain('date réelle')
+  expect(result.fields.presentation).toContain('10 caractères')
+})
+
+test('un refus conserve les réponses et affiche le champ concerné', async ({page}) => {
+  await page.route('**/api/support-application', (route) =>
+    route.fulfill({
+      status: 400,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        message: 'Vérifie les champs indiqués ci-dessous.',
+        fields: {motivations: 'Cette réponse doit contenir au moins 10 caractères.'},
+      }),
+    }),
+  )
+  await page.goto('/support-candidature')
+  await page.getByPlaceholder('Ex. 742482884069294211').fill('742482884069294211')
+  await page.getByPlaceholder('Ton âge').fill('20')
+  await page.getByPlaceholder('jj/mm/aaaa').fill('01/01/2006')
+  await page.getByPlaceholder('Parle-nous un peu de toi...').fill('Je suis étudiant.')
+  await page
+    .getByPlaceholder('Pourquoi souhaites-tu rejoindre l’équipe support ?')
+    .fill('Je veux aider les joueurs.')
+  await page
+    .getByPlaceholder('Tes idées, ton expérience et ta façon d’aider la communauté...')
+    .fill('Je répondrai aux demandes.')
+  await page.getByRole('button', {name: 'Envoyer ma candidature'}).click()
+
+  await expect(page.locator('form [role="alert"]')).toContainText('Vérifie les champs')
+  await expect(
+    page.getByText('Cette réponse doit contenir au moins 10 caractères.'),
+  ).toBeVisible()
+  await expect(page.getByPlaceholder('Ex. 742482884069294211')).toHaveValue(
+    '742482884069294211',
+  )
+})

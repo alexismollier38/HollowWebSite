@@ -13,7 +13,9 @@
     "launcher": "Télécharger le launcher"
   },
   "support": {
-    "required_fields": "Les champs marqués d’un astérisque sont obligatoires."
+    "required_fields": "Les champs marqués d’un astérisque sont obligatoires.",
+    "discord_help": "Clic droit sur ton pseudo + copier l’ID de l’utilisateur",
+    "success_message": "Ta candidature a bien été transmise à l’équipe de modération."
   },
   "pied": {
     "conditions": "Conditions d'utilisation",

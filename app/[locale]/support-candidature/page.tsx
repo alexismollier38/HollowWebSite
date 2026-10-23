@@ -37,7 +37,10 @@ export default async function SupportApplicationPage({
           </p>
         </header>
 
-        <CandidatureSupportForm />
+        <CandidatureSupportForm
+          discordHelp={t('support.discord_help')}
+          successMessage={t('support.success_message')}
+        />
       </div>
     </main>
   )
