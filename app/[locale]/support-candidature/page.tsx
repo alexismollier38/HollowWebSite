@@ -29,10 +29,6 @@ export default async function SupportApplicationPage({
             className="mx-auto block w-[min(31rem,100%)] object-contain"
           />
           <h1 className="sr-only">Candidature support Hollow</h1>
-          <p className="mx-auto mt-7 max-w-[40rem] text-base leading-relaxed text-support-or-clair">
-            Salut, je te laisserais répondre à ce petit questionnaire afin d’apprendre à
-            te connaître un petit peu s’il te plaît :)
-          </p>
           <p className="mt-4 text-sm text-support-or/75">
             Les champs marqués d’un astérisque sont obligatoires.
           </p>
