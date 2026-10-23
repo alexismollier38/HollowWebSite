@@ -64,9 +64,9 @@ export function CandidatureSupportForm() {
           onChange={(event) => update('discordId', event.target.value)}
           inputMode="numeric"
           placeholder="Ex. 742482884069294211"
-          className="champ-candidature placeholder:text-estompe hover:border-white/30 focus:border-parchemin focus:bg-white/10"
+          className="champ-candidature placeholder:text-support-or/45 hover:border-support-or/70 focus:border-support-or focus:bg-support-or/10"
         />
-        <figure className="mt-5 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+        <figure className="mt-5 overflow-hidden rounded-xl border border-support-or/30 bg-black/50 p-1">
           <Image
             src={captureDiscord}
             alt="Menu Discord montrant où copier l’identifiant utilisateur"
@@ -74,7 +74,7 @@ export function CandidatureSupportForm() {
             className="h-auto w-full"
           />
         </figure>
-        <p className="mt-3 text-sm text-estompe-clair">
+        <p className="mt-3 text-sm text-support-or/75">
           Clic droit sur ton pseudo + copier l’ID de l’utilisateur
         </p>
       </Question>
@@ -88,7 +88,7 @@ export function CandidatureSupportForm() {
           value={values.age}
           onChange={(event) => update('age', event.target.value)}
           placeholder="Ton âge"
-          className="champ-candidature max-w-[12rem] placeholder:text-estompe hover:border-white/30 focus:border-parchemin focus:bg-white/10"
+          className="champ-candidature max-w-[12rem] placeholder:text-support-or/45 hover:border-support-or/70 focus:border-support-or focus:bg-support-or/10"
         />
       </Question>
 
@@ -100,7 +100,7 @@ export function CandidatureSupportForm() {
           placeholder="jj/mm/aaaa"
           pattern="(?:0[1-9]|[12][0-9]|3[01])/(?:0[1-9]|1[0-2])/[0-9]{4}"
           title="Utilise le format jj/mm/aaaa"
-          className="champ-candidature max-w-[16rem] placeholder:text-estompe hover:border-white/30 focus:border-parchemin focus:bg-white/10"
+          className="champ-candidature max-w-[16rem] placeholder:text-support-or/45 hover:border-support-or/70 focus:border-support-or focus:bg-support-or/10"
         />
       </Question>
 
@@ -114,7 +114,7 @@ export function CandidatureSupportForm() {
           onChange={(event) => update('presentation', event.target.value)}
           placeholder="Parle-nous un peu de toi..."
           rows={5}
-          className="champ-candidature resize-y placeholder:text-estompe hover:border-white/30 focus:border-parchemin focus:bg-white/10"
+          className="champ-candidature resize-y placeholder:text-support-or/45 hover:border-support-or/70 focus:border-support-or focus:bg-support-or/10"
         />
       </Question>
 
@@ -125,7 +125,7 @@ export function CandidatureSupportForm() {
           onChange={(event) => update('motivations', event.target.value)}
           placeholder="Pourquoi souhaites-tu rejoindre l’équipe support ?"
           rows={5}
-          className="champ-candidature resize-y placeholder:text-estompe hover:border-white/30 focus:border-parchemin focus:bg-white/10"
+          className="champ-candidature resize-y placeholder:text-support-or/45 hover:border-support-or/70 focus:border-support-or focus:bg-support-or/10"
         />
       </Question>
 
@@ -136,7 +136,7 @@ export function CandidatureSupportForm() {
           onChange={(event) => update('contribution', event.target.value)}
           placeholder="Tes idées, ton expérience et ta façon d’aider la communauté..."
           rows={5}
-          className="champ-candidature resize-y placeholder:text-estompe hover:border-white/30 focus:border-parchemin focus:bg-white/10"
+          className="champ-candidature resize-y placeholder:text-support-or/45 hover:border-support-or/70 focus:border-support-or focus:bg-support-or/10"
         />
       </Question>
 
@@ -144,13 +144,13 @@ export function CandidatureSupportForm() {
         <button
           type="submit"
           disabled={state === 'sending'}
-          className="action w-fit rounded-md bg-parchemin px-7 py-4 text-encre transition-colors hover:bg-parchemin-vif disabled:cursor-wait disabled:opacity-60"
+          className="action w-fit rounded-md bg-support-or px-7 py-4 text-black transition-colors hover:bg-support-or-clair disabled:cursor-wait disabled:opacity-60"
         >
           {state === 'sending' ? 'Envoi en cours...' : 'Envoyer ma candidature'}
         </button>
         <p
           aria-live="polite"
-          className={`text-sm ${state === 'error' ? 'text-estompe-clair' : 'text-parchemin'}`}
+          className={`text-sm ${state === 'error' ? 'text-support-or-clair' : 'text-support-or-clair'}`}
         >
           {message}
         </p>
@@ -171,11 +171,13 @@ function Question({
   children: React.ReactNode
 }) {
   return (
-    <fieldset className="flex flex-col gap-3 border-b border-white/10 pb-6 last:border-0">
-      <label className="text-lg font-medium text-parchemin">
+    <fieldset className="support-question">
+      <label className="text-lg font-medium text-support-or-clair">
         {label} {required && <span aria-hidden="true">*</span>}
         {hint && (
-          <span className="mt-1 block text-sm font-normal text-estompe">{hint}</span>
+          <span className="mt-1 block text-sm font-normal text-support-or/65">
+            {hint}
+          </span>
         )}
       </label>
       {children}

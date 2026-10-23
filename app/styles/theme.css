@@ -20,6 +20,11 @@
   --color-braise-vif: oklch(0.92 0 0);
   --color-braise-sombre: oklch(0.42 0 0);
 
+  /* Doré réservé à la page de recrutement support. */
+  --color-support-or: #d5a928;
+  --color-support-or-clair: #f6d77a;
+  --color-support-or-sombre: #795d18;
+
   /* Teintes de royaume, en réserve pour le lot 3 */
   --color-clover-trait: #5e8c4a;
   --color-clover-texte: #8fb86a;
@@ -53,15 +58,40 @@
 
 @utility champ-candidature {
   width: 100%;
-  border: 1px solid rgb(255 255 255 / 0.18);
+  border: 1px solid color-mix(in srgb, var(--color-support-or) 32%, transparent);
   border-radius: 0.5rem;
   background: rgb(255 255 255 / 0.04);
   padding: 0.9rem 1rem;
-  color: var(--color-parchemin-vif);
+  color: var(--color-support-or-clair);
   outline: none;
   transition:
     border-color 0.15s ease,
     background-color 0.15s ease;
+}
+
+@utility support-page {
+  background:
+    radial-gradient(circle at 50% -10%, rgb(213 169 40 / 0.12), transparent 42%),
+    radial-gradient(circle at 100% 100%, rgb(121 93 24 / 0.1), transparent 36%), #050403;
+}
+
+@utility support-panel {
+  border: 1px solid color-mix(in srgb, var(--color-support-or) 38%, transparent);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgb(24 18 7 / 0.92), rgb(5 4 3 / 0.96));
+  box-shadow:
+    0 24px 80px rgb(0 0 0 / 0.42),
+    inset 0 1px 0 rgb(246 215 122 / 0.08);
+}
+
+@utility support-question {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-support-or) 24%, transparent);
+  border-radius: 0.875rem;
+  background: rgb(13 10 5 / 0.82);
+  padding: 1.25rem;
 }
 
 @layer base {
