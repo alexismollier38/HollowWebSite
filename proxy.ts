@@ -1,4 +1,5 @@
 import {existsSync, readFileSync} from 'node:fs'
+import {randomUUID} from 'node:crypto'
 import {join} from 'node:path'
 import createMiddleware from 'next-intl/middleware'
 import type {NextRequest} from 'next/server'
@@ -47,7 +48,11 @@ function chargerManifeste(): ManifesteCsp {
   return manifeste
 }
 
-function construireCsp(empreintes: readonly string[], enHttps: boolean): string {
+function construireCsp(
+  empreintes: readonly string[],
+  enHttps: boolean,
+  nonce?: string,
+): string {
   /*
    * ⚠️ En développement, on n'envoie **aucune** empreinte.
    *
@@ -60,7 +65,9 @@ function construireCsp(empreintes: readonly string[], enHttps: boolean): string 
    */
   const scripts = enDeveloppement
     ? ["'self'", "'unsafe-eval'", "'unsafe-inline'"].join(' ')
-    : ["'self'", ...empreintes].join(' ')
+    : nonce
+      ? ["'self'", `'nonce-${nonce}'`].join(' ')
+      : ["'self'", ...empreintes].join(' ')
 
   const directives = [
     "default-src 'self'",
@@ -108,6 +115,30 @@ function cheminRendu(request: NextRequest, reecriture: string | null): string {
 }
 
 export default function proxy(request: NextRequest) {
+  const cheminPublic = request.nextUrl.pathname
+  const candidatureSupport = [
+    '/support-candidature',
+    '/support-candidature/confirmation',
+    '/en/support-application',
+    '/en/support-application/confirmation',
+  ].includes(cheminPublic)
+  const enHttps =
+    request.headers.get('x-forwarded-proto') === 'https' ||
+    request.nextUrl.protocol === 'https:'
+
+  // Ces pages sont rendues par requête : Next peut attribuer un nonce aux scripts
+  // RSC. Contrairement aux empreintes post-build, ce mécanisme fonctionne aussi
+  // quand Vercel n'embarque pas .next/csp-hashes.json dans le proxy déployé.
+  const nonce =
+    !enDeveloppement && candidatureSupport
+      ? Buffer.from(randomUUID()).toString('base64')
+      : undefined
+  const cspAvecNonce = nonce ? construireCsp([], enHttps, nonce) : undefined
+  if (nonce && cspAvecNonce) {
+    request.headers.set('Content-Security-Policy', cspAvecNonce)
+    request.headers.set('x-nonce', nonce)
+  }
+
   const reponse = routageI18n(request)
 
   const chemin = cheminRendu(request, reponse.headers.get('x-middleware-rewrite'))
@@ -121,13 +152,9 @@ export default function proxy(request: NextRequest) {
   ]
 
   // Derrière un reverse proxy, c'est `x-forwarded-proto` qui dit la vérité.
-  const enHttps =
-    request.headers.get('x-forwarded-proto') === 'https' ||
-    request.nextUrl.protocol === 'https:'
-
   reponse.headers.set(
     'content-security-policy',
-    construireCsp([...new Set(empreintes)], enHttps),
+    cspAvecNonce ?? construireCsp([...new Set(empreintes)], enHttps),
   )
 
   return reponse

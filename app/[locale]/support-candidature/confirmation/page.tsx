@@ -1,5 +1,6 @@
 import type {Metadata} from 'next'
 import Image from 'next/image'
+import {connection} from 'next/server'
 import {setRequestLocale} from 'next-intl/server'
 import logoSupport from '@/assets/images/logo-support.png'
 
@@ -15,6 +16,7 @@ export default async function SupportApplicationConfirmationPage({
   params: Promise<{locale: string}>
   searchParams: Promise<{status?: string}>
 }) {
+  await connection()
   const {locale} = await params
   const {status} = await searchParams
   setRequestLocale(locale)

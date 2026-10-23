@@ -12,6 +12,9 @@
     "discord": "Join the Discord",
     "launcher": "Download the launcher"
   },
+  "support": {
+    "required_fields": "Fields marked with an asterisk are required."
+  },
   "pied": {
     "conditions": "Terms of use",
     "confidentialite": "Privacy policy"

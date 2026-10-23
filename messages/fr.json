@@ -12,6 +12,9 @@
     "discord": "Rejoindre le Discord",
     "launcher": "Télécharger le launcher"
   },
+  "support": {
+    "required_fields": "Les champs marqués d’un astérisque sont obligatoires."
+  },
   "pied": {
     "conditions": "Conditions d'utilisation",
     "confidentialite": "Politique de confidentialité"
